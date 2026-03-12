@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Trabajos de Infovis</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trabajos de Infovis</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+
 <style>
+
+html{
+  scroll-behavior:smooth;
+}
 
 body{
   font-family: Arial, Helvetica, sans-serif;
@@ -22,7 +26,7 @@ header{
   background:white;
   text-align:center;
   padding:25px 0 15px 0;
-  border-bottom:4px solid #444; /* línea gris oscura */
+  border-bottom:4px solid #444;
 }
 
 header h1{
@@ -31,17 +35,32 @@ header h1{
   letter-spacing:1px;
 }
 
+/* MENU */
+
+.menu{
+  background:#333;
+  padding:12px;
+  text-align:center;
+}
+
+.menu a{
+  color:white;
+  margin:0 20px;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:15px;
+}
+
+.menu a:hover{
+  text-decoration:underline;
+}
+
 /* CONTENIDO */
 
 .container{
   max-width:1400px;
   margin:auto;
   padding:40px 20px;
-}
-
-.page-title{
-  text-align:center;
-  margin-bottom:40px;
 }
 
 .card{
@@ -80,13 +99,22 @@ object{
 <body>
 
 <header>
-  <h1>Eduardo Pineda</h1>
-  <p>CD.06 Visualización de la Información</p>
+<h1>Eduardo Pineda</h1>
+<p>CD.06 Visualización de la Información</p>
 </header>
 
+<!-- MENU DE NAVEGACIÓN -->
+
+<nav class="menu">
+<a href="#raw">Raw Graphs</a>
+<a href="#florence">Florence Nightingales</a>
+</nav>
+
 <div class="container">
-  
-<div class="card">
+
+<!-- PRIMERA VISUALIZACIÓN -->
+
+<div class="card" id="raw">
 <h2>Raw Graphs</h2>
 
 <div class="visualization">
@@ -94,8 +122,10 @@ object{
 </div>
 
 </div>
-  
-<div class="card">
+
+<!-- SEGUNDA VISUALIZACIÓN -->
+
+<div class="card" id="florence">
 <h2>Florence Nightingales</h2>
 
 <div class="visualization">
@@ -111,7 +141,6 @@ object{
 </div>
 
 <script src="https://public.flourish.studio/resources/embed.js"></script>
-  
+
 </body>
 </html>
-
