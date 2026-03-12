@@ -1,19 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Trabajos de Infovis</title>
+
+<style>
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background-color:#f5f6fa;
+  margin:0;
+  padding:0;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:40px 20px;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  margin-bottom:40px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+  margin-top:0;
+  margin-bottom:20px;
+  color:#333;
+}
+
+.visualization{
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+
+object{
+  width:100%;
+  max-width:800px;
+  height:auto;
+}
+
+.flourish-embed{
+  width:100%;
+}
+
+</style>
+
 </head>
+
 <body>
-<h1>Raw Graphs</h1>
+
+<div class="container">
+
+<h1>Trabajos de Infovis</h1>
+
+<div class="card">
+<h2>Raw Graphs</h2>
+
+<div class="visualization">
 <object data="./Image.svg" type="image/svg+xml"></object>
-<h2>Florence Nightingales</h2>
-<div class="flourish-embed flourish-chart" data-src="visualisation/27939096">
-  <noscript>
-    <img src="https://public.flourish.studio/visualisation/27939096/thumbnail" width="100%" alt="visualization">
-  </noscript>
 </div>
+
+</div>
+
+<div class="card">
+<h2>Florence Nightingales</h2>
+
+<div class="visualization">
+<div class="flourish-embed flourish-chart" data-src="visualisation/27939096">
+<noscript>
+<img src="https://public.flourish.studio/visualisation/27939096/thumbnail" width="100%" alt="visualization">
+</noscript>
+</div>
+</div>
+
+</div>
+
+</div>
+
 <script src="https://public.flourish.studio/resources/embed.js"></script>
+
 </body>
 </html>
