@@ -13,9 +13,26 @@ html{
   scroll-behavior:smooth;
 }
 
+/* VARIABLES DE COLOR */
+
+:root{
+  --bg:#f5f6fa;
+  --card:#ffffff;
+  --text:#333;
+  --header:#ffffff;
+}
+
+.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f1f5f9;
+  --header:#1e293b;
+}
+
 body{
   font-family: Arial, Helvetica, sans-serif;
-  background-color:#f5f6fa;
+  background-color:var(--bg);
+  color:var(--text);
   margin:0;
   padding:0;
 }
@@ -23,16 +40,31 @@ body{
 /* HEADER */
 
 header{
-  background:white;
+  background:var(--header);
   text-align:center;
   padding:25px 0 15px 0;
   border-bottom:4px solid #14249C;
+  position:relative;
 }
 
 header h1{
   margin:0;
   font-size:28px;
   letter-spacing:1px;
+}
+
+/* BOTON TEMA */
+
+#theme-toggle{
+  position:absolute;
+  top:20px;
+  right:20px;
+  border:none;
+  background:#e5e7eb;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
 }
 
 /* MENU */
@@ -68,7 +100,7 @@ header h1{
 }
 
 .card{
-  background:white;
+  background:var(--card);
   padding:25px;
   margin-bottom:40px;
   border-radius:10px;
@@ -97,7 +129,7 @@ header h1{
 h2{
   margin-top:0;
   margin-bottom:20px;
-  color:#333;
+  color:var(--text);
 }
 
 .visualization{
@@ -124,6 +156,7 @@ object{
 <header>
 <h1>Eduardo Pineda</h1>
 <p>CD.06 Visualización de la Información</p>
+<button id="theme-toggle">🌙</button>
 </header>
 
 <!-- MENU DE NAVEGACIÓN -->
@@ -166,6 +199,17 @@ object{
 <script src="https://public.flourish.studio/resources/embed.js"></script>
 
 <!-- BOTON PARA SUBIR -->
- <a href="#" class="top-btn">↑ Menu</a> 
+<a href="#" class="top-btn">↑ Menu</a>
+
+<script>
+
+const button = document.getElementById("theme-toggle");
+
+button.onclick = () => {
+  document.body.classList.toggle("dark");
+}
+
+</script>
+
 </body>
 </html>
