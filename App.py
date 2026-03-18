@@ -105,9 +105,14 @@ df_NFL_Teams["flag_active"] = df_NFL_Teams[col].apply(is_active)
 Pre_data = '''
 
 SELECT 
-a.schedule_date
-,a.schedule_week
+strftime('%Y-%m-%d', 
+    substr(schedule_date, -4) || '-' || 
+    printf('%02d', substr(schedule_date, 1, instr(schedule_date, '/') - 1)) || '-' || 
+    printf('%02d', substr(schedule_date, instr(schedule_date, '/') + 1, 
+      instr(substr(schedule_date, instr(schedule_date, '/') + 1), '/') - 1))
+      ) AS fecha_formateada
 
+,a.schedule_week
 ,b.team_id as team_id_home
 ,a.team_home
 ,b.team_name_short as team_name_short_home
