@@ -71,6 +71,25 @@
       background: #333;
     }
 
+    /* LINK GITHUB */
+    .sidebar a.github-link {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      background: black;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      text-align: center;
+      transition: 0.2s;
+      box-sizing: border-box;
+    }
+
+    .sidebar a.github-link:hover {
+      background: #333;
+    }
+
     /* BOTÓN SIDEBAR */
     .toggle-sidebar {
       position: fixed;
@@ -131,8 +150,15 @@
     </div>
 
     <button onclick="changeContent('home')">Catálogo</button>
-   <button onclick="changeContent('team')">Equipo</button>
+    <button onclick="changeContent('team')">Equipo</button>
     <button onclick="changeContent('stats')">Estadísticas</button>
+
+    <!-- 🔥 LINK A GITHUB -->
+    <a class="github-link" href="https://github.com/tu-usuario/tu-repo" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="18" style="vertical-align: middle; margin-right: 8px;">
+      GitHub Repo
+    </a>
+
   </div>
 
   <!-- CONTENIDO -->
@@ -167,7 +193,7 @@
 
       if (section === 'home') {
         content.innerHTML = `
-          <h1>Dashboard Buccaneers</h1>
+          <h1>Tampa Bay Buccaneers</h1>
           <p>Bienvenido al sistema de análisis del equipo. 
             Aquí podrás encontrar información sobre el catálogo de las múltiples variables utilizadas del dataset.</p>
         `;
@@ -175,14 +201,14 @@
 
       if (section === 'team') {
         content.innerHTML = `
-          <h1>Dashboard Buccaneers</h1>
+          <h1>Tampa Bay Buccaneers</h1>
           <p>Información del roster de los Tampa Bay Buccaneers.</p>
         `;
       }
 
       if (section === 'stats') {
         content.innerHTML = `
-          <h1>Dashboard Buccaneers</h1>
+          <h1>Tampa Bay Buccaneers</h1>
           <p>Aquí podrás visualizar métricas del equipo.</p>
         `;
       }
