@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tampa Bay Buccaneers Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111;
+      --primary: #d50a0a; /* rojo Bucs */
+      --secondary: #0a0a0a;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f1f1f1;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: 0.3s;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary);
+      padding: 10px 20px;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-links button {
+      background: black;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .nav-links button:hover {
+      background: gray;
+    }
+
+    /* BOTÓN DARK MODE */
+    .toggle-btn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    /* CONTENIDO */
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+
+    canvas {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      color: var(--primary);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div><strong>🏈 Buccaneers Stats</strong></div>
+
+    <div class="nav-links">
+      <button onclick="showChart('points')">Puntos</button>
+      <button onclick="showChart('wins')">Victorias</button>
+      <button onclick="showChart('yards')">Yardas</button>
+    </div>
+
+    <button class="toggle-btn" onclick="toggleMode()">🌙 / ☀️</button>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="container">
+    <h1>Tampa Bay Buccaneers Dashboard</h1>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <script>
+    let chart;
+
+    function createChart(label, data) {
+      const ctx = document.getElementById('chart').getContext('2d');
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['2021', '2022', '2023', '2024'],
+          datasets: [{
+            label: label,
+            data: data,
+            backgroundColor: '#d50a0a'
+          }]
+        }
+      });
+    }
+
+    function showChart(type) {
+      if (type === 'points') {
+        createChart('Puntos por temporada', [450, 390, 410, 430]);
+      }
+      if (type === 'wins') {
+        createChart('Victorias', [13, 8, 9, 11]);
+      }
+      if (type === 'yards') {
+        createChart('Yardas ofensivas', [6200, 5800, 6000, 6100]);
+      }
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle('dark');
+    }
+
+    // Cargar gráfico inicial
+    showChart('points');
+  </script>
+
+</body>
+</html>

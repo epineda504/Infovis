@@ -152,7 +152,6 @@ Where a.team_home = 'Tampa Bay Buccaneers' or a.team_away = 'Tampa Bay Buccaneer
 
 '''
 
-
 Pre_data1 = sql.sqldf(Pre_data, locals())
 Pre_data1.to_csv('NFL_Buccaneers_Data.csv', index=False)
 
