@@ -26,19 +26,22 @@
     }
 
     /* SIDEBAR */
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 220px;
-      height: 100vh;
-      background: var(--primary);
-      padding: 20px;
-      box-sizing: border-box;
-      transform: translateX(0);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 100vh;
+    background: var(--primary);
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+  }
 
     .sidebar.hidden {
       transform: translateX(-100%);
@@ -89,6 +92,10 @@
     .sidebar a.github-link:hover {
       background: #333;
     }
+
+    .spacer {
+  flex-grow: 1; /* 👈 empuja lo de abajo hacia el fondo */
+  }
 
     /* BOTÓN SIDEBAR */
     .toggle-sidebar {
@@ -153,6 +160,8 @@
     <button onclick="changeContent('team')">Equipo</button>
     <button onclick="changeContent('stats')">Estadísticas</button>
 
+    <div class="spacer"></div> <!-- 👈 empuja hacia abajo -->
+
     <!-- 🔥 LINK A GITHUB -->
     <a class="github-link" href="https://github.com/epineda504/Infovis" target="_blank">
       <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="18" style="vertical-align: middle; margin-right: 8px;">
@@ -194,8 +203,10 @@
       if (section === 'home') {
         content.innerHTML = `
           <h1>Tampa Bay Buccaneers</h1>
-          <p>Bienvenido al sistema de análisis del equipo. 
-            Aquí podrás encontrar información sobre el catálogo de las múltiples variables utilizadas del dataset.</p>
+          <p>Bienvenido al sistema de análisis del equipo.</p>
+          <p>
+            Aquí podrás encontrar información sobre el catálogo de las múltiples variables utilizadas del dataset.
+          </p>
         `;
       }
 
