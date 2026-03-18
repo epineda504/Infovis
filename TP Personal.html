@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Tampa Bay Buccaneers Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Buccaneers Dashboard</title>
 
   <style>
     :root {
       --bg: #ffffff;
       --text: #111;
-      --primary: #d50a0a; /* rojo Bucs */
+      --primary: #d50a0a;
       --secondary: #0a0a0a;
     }
 
@@ -24,55 +23,84 @@
       background: var(--bg);
       color: var(--text);
       transition: 0.3s;
+      display: flex;
     }
 
-    /* NAVBAR */
-    .navbar {
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: var(--primary);
+      color: white;
+      transition: 0.3s;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .sidebar.collapsed {
+      width: 70px;
+    }
+
+    /* LOGO */
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 100px;
+      transition: 0.3s;
+    }
+
+    .sidebar.collapsed .logo-container img {
+      width: 40px;
+    }
+
+    /* BOTONES */
+    .sidebar button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      background: black;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .sidebar button:hover {
+      background: gray;
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    /* TOPBAR */
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .toggle-sidebar {
       background: var(--primary);
-      padding: 10px 20px;
+      border: none;
       color: white;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 15px;
-    }
-
-    .nav-links button {
+    .toggle-dark {
       background: black;
       color: white;
       border: none;
       padding: 8px 12px;
       cursor: pointer;
       border-radius: 5px;
-    }
-
-    .nav-links button:hover {
-      background: gray;
-    }
-
-    /* BOTÓN DARK MODE */
-    .toggle-btn {
-      background: white;
-      color: black;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    /* CONTENIDO */
-    .container {
-      padding: 20px;
-      text-align: center;
-    }
-
-    canvas {
-      max-width: 600px;
-      margin: auto;
     }
 
     h1 {
@@ -83,64 +111,72 @@
 
 <body>
 
-  <!-- NAVBAR -->
-  <div class="navbar">
-    <div><strong>🏈 Buccaneers Stats</strong></div>
-
-    <div class="nav-links">
-      <button onclick="showChart('points')">Puntos</button>
-      <button onclick="showChart('wins')">Victorias</button>
-      <button onclick="showChart('yards')">Yardas</button>
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    
+    <div class="logo-container">
+      <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/Tampa_Bay_Buccaneers_logo.svg" alt="Bucs Logo">
     </div>
 
-    <button class="toggle-btn" onclick="toggleMode()">🌙 / ☀️</button>
+    <button onclick="changeContent('home')">Inicio</button>
+    <button onclick="changeContent('team')">Equipo</button>
+    <button onclick="changeContent('stats')">Stats</button>
   </div>
 
-  <!-- CONTENIDO -->
-  <div class="container">
-    <h1>Tampa Bay Buccaneers Dashboard</h1>
-    <canvas id="chart"></canvas>
+  <!-- MAIN -->
+  <div class="main">
+    
+    <div class="topbar">
+      <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+      <button class="toggle-dark" onclick="toggleMode()">🌙 / ☀️</button>
+    </div>
+
+    <div id="content">
+      <h1>Dashboard Buccaneers</h1>
+      <p>Bienvenido al sistema de análisis.</p>
+    </div>
+
   </div>
 
   <script>
-    let chart;
-
-    function createChart(label, data) {
-      const ctx = document.getElementById('chart').getContext('2d');
-
-      if (chart) chart.destroy();
-
-      chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['2021', '2022', '2023', '2024'],
-          datasets: [{
-            label: label,
-            data: data,
-            backgroundColor: '#d50a0a'
-          }]
-        }
-      });
-    }
-
-    function showChart(type) {
-      if (type === 'points') {
-        createChart('Puntos por temporada', [450, 390, 410, 430]);
-      }
-      if (type === 'wins') {
-        createChart('Victorias', [13, 8, 9, 11]);
-      }
-      if (type === 'yards') {
-        createChart('Yardas ofensivas', [6200, 5800, 6000, 6100]);
-      }
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
     }
 
     function toggleMode() {
       document.body.classList.toggle('dark');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark'));
     }
 
-    // Cargar gráfico inicial
-    showChart('points');
+    // Mantener modo oscuro al recargar
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
+    }
+
+    function changeContent(section) {
+      const content = document.getElementById('content');
+
+      if (section === 'home') {
+        content.innerHTML = `
+          <h1>Dashboard Buccaneers</h1>
+          <p>Bienvenido al sistema de análisis del equipo.</p>
+        `;
+      }
+
+      if (section === 'team') {
+        content.innerHTML = `
+          <h1>Equipo</h1>
+          <p>Información del roster de los Tampa Bay Buccaneers.</p>
+        `;
+      }
+
+      if (section === 'stats') {
+        content.innerHTML = `
+          <h1>Estadísticas</h1>
+          <p>Aquí podrás visualizar métricas del equipo.</p>
+        `;
+      }
+    }
   </script>
 
 </body>
