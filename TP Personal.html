@@ -9,7 +9,6 @@
       --bg: #ffffff;
       --text: #111;
       --primary: #d50a0a;
-      --secondary: #0a0a0a;
     }
 
     body.dark {
@@ -23,22 +22,25 @@
       background: var(--bg);
       color: var(--text);
       transition: 0.3s;
-      display: flex;
     }
 
     /* SIDEBAR */
     .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
       width: 220px;
       height: 100vh;
       background: var(--primary);
-      color: white;
-      transition: 0.3s;
       padding: 20px;
       box-sizing: border-box;
+      transform: translateX(0);
+      transition: transform 0.3s ease;
+      z-index: 1000;
     }
 
-    .sidebar.collapsed {
-      width: 70px;
+    .sidebar.hidden {
+      transform: translateX(-100%);
     }
 
     /* LOGO */
@@ -49,14 +51,9 @@
 
     .logo-container img {
       width: 100px;
-      transition: 0.3s;
     }
 
-    .sidebar.collapsed .logo-container img {
-      width: 40px;
-    }
-
-    /* BOTONES */
+    /* BOTONES SIDEBAR */
     .sidebar button {
       width: 100%;
       margin: 10px 0;
@@ -65,55 +62,64 @@
       background: black;
       color: white;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 6px;
+      transition: 0.2s;
     }
 
     .sidebar button:hover {
-      background: gray;
+      background: #333;
+    }
+
+    /* BOTÓN SIDEBAR (FLOATING) */
+    .toggle-sidebar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      z-index: 1100;
+      font-size: 16px;
+    }
+
+    /* BOTÓN DARK */
+    .toggle-dark {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: black;
+      color: white;
+      border: none;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     /* MAIN */
     .main {
-      flex: 1;
-      padding: 20px;
-    }
-
-    /* TOPBAR */
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .toggle-sidebar {
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    .toggle-dark {
-      background: black;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      border-radius: 5px;
+      padding: 40px;
     }
 
     h1 {
       color: var(--primary);
+      margin-top: 60px;
     }
   </style>
 </head>
 
 <body>
 
+  <!-- BOTONES FLOATING -->
+  <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+  <button class="toggle-dark" onclick="toggleMode()">🌙</button>
+
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
-    
+
     <div class="logo-container">
       <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/Tampa_Bay_Buccaneers_logo.svg" alt="Bucs Logo">
     </div>
@@ -123,24 +129,17 @@
     <button onclick="changeContent('stats')">Stats</button>
   </div>
 
-  <!-- MAIN -->
+  <!-- CONTENIDO -->
   <div class="main">
-    
-    <div class="topbar">
-      <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
-      <button class="toggle-dark" onclick="toggleMode()">🌙 / ☀️</button>
-    </div>
-
     <div id="content">
       <h1>Dashboard Buccaneers</h1>
-      <p>Bienvenido al sistema de análisis.</p>
+      <p>Bienvenido al sistema de análisis del equipo.</p>
     </div>
-
   </div>
 
   <script>
     function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('collapsed');
+      document.getElementById('sidebar').classList.toggle('hidden');
     }
 
     function toggleMode() {
@@ -148,7 +147,7 @@
       localStorage.setItem('darkMode', document.body.classList.contains('dark'));
     }
 
-    // Mantener modo oscuro al recargar
+    // Mantener modo oscuro
     if (localStorage.getItem('darkMode') === 'true') {
       document.body.classList.add('dark');
     }
