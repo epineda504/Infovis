@@ -129,9 +129,9 @@
       <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/Tampa_Bay_Buccaneers_logo.svg" alt="Bucs Logo">
     </div>
 
-    <button onclick="changeContent('home')">Inicio</button>
-    <button onclick="changeContent('team')">Equipo</button>
-    <button onclick="changeContent('stats')">Stats</button>
+    <button onclick="changeContent('home')">Catálogo</button>
+   <button onclick="changeContent('team')">Equipo</button>
+    <button onclick="changeContent('stats')">Estadísticas</button>
   </div>
 
   <!-- CONTENIDO -->
@@ -173,14 +173,14 @@
 
       if (section === 'team') {
         content.innerHTML = `
-          <h1>Equipo</h1>
+          <h1>Dashboard Buccaneers</h1>
           <p>Información del roster de los Tampa Bay Buccaneers.</p>
         `;
       }
 
       if (section === 'stats') {
         content.innerHTML = `
-          <h1>Estadísticas</h1>
+          <h1>Dashboard Buccaneers</h1>
           <p>Aquí podrás visualizar métricas del equipo.</p>
         `;
       }
