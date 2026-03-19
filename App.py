@@ -374,4 +374,4 @@ h2 {{
 with open("game_log.html", "w", encoding="utf-8") as f:
     f.write(html_page)
 
-print("✅ HTML generado correctamente con header")
+print("HTML generado correctamente con header")
