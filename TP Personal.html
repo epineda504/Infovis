@@ -293,13 +293,14 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('darkMode') === 'true') {
-      document.body.classList.add('dark');
-    }
+    // 🔥 FORZAR modo claro siempre
+    document.body.classList.remove('dark');
+    localStorage.setItem('darkMode', 'false');
   });
 
   function changeContent(section) {
     const content = document.getElementById('content');
+
 
     if (section === 'home') {
       content.innerHTML = `
