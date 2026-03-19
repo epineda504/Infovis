@@ -1,235 +1,333 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Buccaneers Dashboard</title>
-  <link rel="icon" type="image/png" href="https://www.clipartmax.com/png/small/195-1958753_tampa-bay-buccaneers-logo-png.png">
+<meta charset="UTF-8">
+<title>Buccaneers Dashboard</title>
 
-  <style>
-    :root {
-      --bg: #ffffff;
-      --text: #111;
-      --primary: #d50a0a;
-    }
+<style>
+:root {
+  --bg: #ffffff;
+  --text: #111;
+  --primary: #d50a0a;
+}
 
-    body.dark {
-      --bg: #121212;
-      --text: #f1f1f1;
-    }
+body.dark {
+  --bg: #121212;
+  --text: #f1f1f1;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: 0.3s;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: 0.3s;
+}
 
-    /* SIDEBAR */
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 220px;
-    height: 100vh;
-    background: var(--primary);
-    padding: 20px;
-    box-sizing: border-box;
-    transform: translateX(0);
-    transition: transform 0.3s ease;
-    z-index: 1000;
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 100vh;
+  background: linear-gradient(180deg, #d50a0a, #8b0000);
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
 
-    display: flex;
-    flex-direction: column;
-  }
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
 
-    .sidebar.hidden {
-      transform: translateX(-100%);
-    }
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    /* LOGO */
-    .logo-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+.logo-container img {
+  width: 100px;
+}
 
-    .logo-container img {
-      width: 100px;
-    }
+.sidebar button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  background: black;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.2s;
+}
 
-    /* BOTONES */
-    .sidebar button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      background: black;
-      color: white;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: 0.2s;
-    }
+.sidebar button:hover {
+  background: #222;
+  transform: translateX(3px);
+}
 
-    .sidebar button:hover {
-      background: #333;
-    }
+.spacer {
+  flex-grow: 1;
+}
 
-    /* LINK GITHUB */
-    .sidebar a.github-link {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      background: black;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      text-align: center;
-      transition: 0.2s;
-      box-sizing: border-box;
-    }
+/* BOTONES */
+.toggle-sidebar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  z-index: 1100;
+}
 
-    .sidebar a.github-link:hover {
-      background: #333;
-    }
+.toggle-dark {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+}
 
-    .spacer {
-  flex-grow: 1; /* 👈 empuja lo de abajo hacia el fondo */
-  }
+/* MAIN */
+.main {
+  padding: 40px;
+  transition: margin-left 0.3s ease;
+}
 
-    /* BOTÓN SIDEBAR */
-    .toggle-sidebar {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 10px 12px;
-      cursor: pointer;
-      border-radius: 8px;
-      z-index: 1100;
-      font-size: 16px;
-    }
+.main.shifted {
+  margin-left: 220px;
+}
 
-    /* BOTÓN DARK */
-    .toggle-dark {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: black;
-      color: white;
-      border: none;
-      padding: 10px 12px;
-      cursor: pointer;
-      border-radius: 8px;
-      font-size: 16px;
-    }
+#content {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
 
-    /* MAIN */
-    .main {
-      padding: 40px;
-      transition: margin-left 0.3s ease;
-    }
+/* GAME LOG */
+.container {
+  width: 800px;
+  margin: 40px auto;
+}
 
-    .main.shifted {
-      margin-left: 220px;
-    }
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 2px solid #444;
+  padding-bottom: 10px;
+}
 
-    h1 {
-      color: var(--primary);
-      margin-top: 60px;
-    }
-  </style>
+.match {
+  background: #1a1d23;
+  padding: 15px;
+  margin: 12px 0;
+  border-radius: 12px;
+  color: white;
+}
+
+.teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.team.right {
+  justify-content: flex-end;
+}
+
+.team img {
+  width: 36px;
+}
+
+.score {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  min-width: 90px;
+}
+
+.details {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.winner {
+  color: white;
+  font-weight: bold;
+}
+
+.loser {
+  color: #777;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- BOTONES -->
-  <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
-  <button class="toggle-dark" onclick="toggleMode()">🌙</button>
+<button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+<button class="toggle-dark" onclick="toggleMode()">🌙</button>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-
-    <div class="logo-container">
-      <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/Tampa_Bay_Buccaneers_logo.svg" alt="Bucs Logo">
-    </div>
-
-    <button onclick="changeContent('home')">Catálogo</button>
-    <button onclick="changeContent('team')">Equipo</button>
-    <button onclick="changeContent('stats')">Estadísticas</button>
-
-    <div class="spacer"></div> <!-- 👈 empuja hacia abajo -->
-
-    <!-- 🔥 LINK A GITHUB -->
-    <a class="github-link" href="https://github.com/epineda504/Infovis" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="18" style="vertical-align: middle; margin-right: 8px;">
-      GitHub Repo
-    </a>
-
+<div class="sidebar" id="sidebar">
+  <div class="logo-container">
+    <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/Tampa_Bay_Buccaneers_logo.svg">
   </div>
 
-  <!-- CONTENIDO -->
-  <div class="main shifted">
-    <div id="content">
-      <h1>Dashboard Buccaneers</h1>
-      <p>Bienvenido al sistema de análisis del equipo.</p>
+  <button onclick="changeContent('home')">Catálogo</button>
+  <button onclick="changeContent('team')">Equipo</button>
+  <button onclick="changeContent('stats')">Estadísticas</button>
+
+  <div class="spacer"></div>
+</div>
+
+<div class="main shifted">
+  <div id="content"></div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('hidden');
+  document.querySelector('.main').classList.toggle('shifted');
+}
+
+function toggleMode() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('darkMode', isDark);
+  document.querySelector('.toggle-dark').textContent = isDark ? '☀️' : '🌙';
+}
+
+if (localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark');
+  document.querySelector('.toggle-dark').textContent = '☀️';
+}
+
+/* DATA */
+const games = [
+  {
+    home: "Tampa Bay Buccaneers",
+    away: "Washington Commanders",
+    homeScore: 20,
+    awayScore: 23,
+    date: "Jan 12, 2025",
+    round: "Wildcard",
+    homeLogo: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png",
+    awayLogo: "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
+  },
+  {
+    home: "Detroit Lions",
+    away: "Tampa Bay Buccaneers",
+    homeScore: 31,
+    awayScore: 23,
+    date: "Jan 21, 2024",
+    round: "Division",
+    homeLogo: "https://a.espncdn.com/i/teamlogos/nfl/500/det.png",
+    awayLogo: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png"
+  }
+];
+
+/* RENDER */
+function renderGameLog() {
+  return `
+    <div class="container">
+      <h2>Historial de Juegos</h2>
+
+      <div class="header">
+        <div>Home</div>
+        <div>Score</div>
+        <div>Away</div>
+      </div>
+
+      ${games.map(g => {
+        const homeWinner = g.homeScore > g.awayScore;
+
+        return `
+        <div class="match">
+          <div class="teams">
+
+            <div class="team">
+              <img src="${g.homeLogo}">
+              <span class="${homeWinner ? 'winner' : 'loser'}">${g.home}</span>
+            </div>
+
+            <div class="score">
+              ${g.homeScore} - ${g.awayScore}
+            </div>
+
+            <div class="team right">
+              <span class="${!homeWinner ? 'winner' : 'loser'}">${g.away}</span>
+              <img src="${g.awayLogo}">
+            </div>
+
+          </div>
+
+          <div class="details">
+            ${g.date} | ${g.round}
+          </div>
+        </div>
+        `;
+      }).join('')}
+
     </div>
-  </div>
+  `;
+}
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const main = document.querySelector('.main');
+/* CONTENIDO */
+function changeContent(section) {
+  const content = document.getElementById('content');
+  content.style.opacity = 0;
 
-      sidebar.classList.toggle('hidden');
-      main.classList.toggle('shifted');
+  setTimeout(() => {
+    if (section === 'home') {
+      content.innerHTML = `
+        <h1>Tampa Bay Buccaneers</h1>
+        <p>Bienvenido al sistema de análisis del equipo.</p>
+      `;
     }
 
-    function toggleMode() {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+    if (section === 'team') {
+      content.innerHTML = `
+        <h1>Equipo</h1>
+        <p>Información del roster.</p>
+      `;
     }
 
-    // Mantener modo oscuro
-    if (localStorage.getItem('darkMode') === 'true') {
-      document.body.classList.add('dark');
+    if (section === 'stats') {
+      content.innerHTML = `
+        <h1>Estadísticas</h1>
+        ${renderGameLog()}
+      `;
     }
 
-    function changeContent(section) {
-      const content = document.getElementById('content');
+    content.style.opacity = 1;
+  }, 150);
 
-      if (section === 'home') {
-        content.innerHTML = `
-          <h1>Tampa Bay Buccaneers</h1>
-          <p>Bienvenido al sistema de análisis del equipo.</p>
-          <p>
-            Aquí podrás encontrar información sobre el catálogo de las múltiples variables utilizadas del dataset.
-          </p>
-        `;
-      }
+  localStorage.setItem('section', section);
+}
 
-      if (section === 'team') {
-        content.innerHTML = `
-          <h1>Tampa Bay Buccaneers</h1>
-          <p>Información del roster de los Tampa Bay Buccaneers.</p>
-        `;
-      }
-
-      if (section === 'stats') {
-        content.innerHTML = `
-          <h1>Tampa Bay Buccaneers</h1>
-          <p>Aquí podrás visualizar métricas del equipo.</p>
-
-          <iframe 
-            src="game_log.html"
-            style="width:100%; height:120vh; border:none; border-radius:10px;">
-          </iframe>
-        `;
-      }
-    }
-  </script>
+/* INICIO */
+const savedSection = localStorage.getItem('section') || 'home';
+changeContent(savedSection);
+</script>
 
 </body>
 </html>
