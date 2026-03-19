@@ -303,11 +303,176 @@
 
 
     if (section === 'home') {
-      content.innerHTML = `
-        <h1>Tampa Bay Buccaneers</h1>
-        <p>Información de los datos utilizados en este TP.</p>
+
+      const schema = [
+        ["schedule_date","Fecha del partido","DATE"],
+        ["schedule_week","Semana del partido en la temporada","STRING"],
+        ["team_id_home","ID único del equipo local","STRING"],
+        ["team_home","Equipo local","STRING"],
+        ["team_name_short_home","Nombre corto del equipo local","STRING"],
+        ["team_division_home","División del equipo local","STRING"],
+        ["team_conference_home","Conferencia del equipo local (AFC/NFC)","STRING"],
+        ["logo_url_home","URL del logo del equipo local","STRING"],
+        ["team_id_away","ID único del equipo visitante","STRING"],
+        ["team_away","Equipo visitante","STRING"],
+        ["team_name_short_away","Nombre corto del equipo visitante","STRING"],
+        ["team_division_away","División del equipo visitante","STRING"],
+        ["team_conference_away","Conferencia del equipo visitante (AFC/NFC)","STRING"],
+        ["logo_url_away","URL del logo del equipo visitante","STRING"],
+        ["score_home","Puntos del equipo local","INT64"],
+        ["score_away","Puntos del equipo visitante","INT64"],
+        ["stadium","Nombre del estadio","STRING"],
+        ["stadium_neutral","¿Sede neutral?","BOOL"],
+        ["weather_temperature","Temperatura (°F)","FLOAT64"],
+        ["weather_temperature_celsius","Temperatura (°C)","FLOAT64"],
+        ["weather_wind_mph","Velocidad del viento","FLOAT64"],
+        ["weather_humidity","Humedad (%)","FLOAT64"],
+        ["flag_victory","Victoria (1 = sí, 0 = no)","BOOL"],
+        ["flag_defeat","Derrota (1 = sí, 0 = no)","BOOL"]
+      ];
+
+      const getTypeColor = (type) => {
+        if (type.includes("INT")) return "#3b82f6";
+        if (type.includes("FLOAT")) return "#a855f7";
+        if (type.includes("STRING")) return "#10b981";
+        if (type.includes("BOOL")) return "#f59e0b";
+        return "#999";
+      };
+
+      const rows = schema.map(col => `
+        <tr>
+          <td class="col-name">${col[0]}</td>
+          <td class="col-desc">${col[1]}</td>
+          <td class="col-type">
+            <span class="type-badge" style="background:${getTypeColor(col[2])}20; color:${getTypeColor(col[2])}">
+              ${col[2]}
+            </span>
+          </td>
+        </tr>
+      `).join("");
+
+    content.innerHTML = `
+      <h1>Tampa Bay Buccaneers</h1>
+
+      <p style="opacity:0.8; margin-bottom:25px;">
+        Catálogo de variables del dataset.
+      </p>
+
+      <div style="max-width:1200px; line-height:1.6; text-align:justify;">
+        <p>
+          La fuente de datos utilizada fue obtenida de 
+          <a href="https://spreadspoke.com/data.html" target="_blank" style="color:var(--primary); font-weight:bold;">
+            Spreadspoke
+          </a>.
+          El dataset original contiene información histórica de partidos de la NFL
+          desde <strong>1979 hasta la actualidad</strong>.
+        </p>
+
+        <p>
+          Para el presente análisis, se realizó un proceso de filtrado,
+          considerando únicamente aquellos partidos en los que los 
+          <strong>Tampa Bay Buccaneers</strong> tuvieron participación,
+          ya sea en condición de equipo local o visitante.
+        </p>
+
+        <p style="margin-top:15px;">
+          A continuación se describen las principales variables incluidas
+          en el dataset filtrado:
+        </p>
+      </div>
+
+        <div class="table-wrapper">
+
+          <table class="modern-table">
+
+            <thead>
+              <tr>
+                <th>Columna</th>
+                <th>Descripción</th>
+                <th style="text-align:right;">Type</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${rows}
+            </tbody>
+
+          </table>
+
+        </div>
       `;
-      return;
+
+      const style = document.createElement('style');
+      style.innerHTML = `
+        .table-wrapper {
+          background: var(--card-bg);
+          border-radius: 14px;
+          border: 1px solid var(--card-border);
+          overflow: hidden;
+        }
+
+        .modern-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 15px;
+        }
+
+        .modern-table th {
+          background: var(--primary);
+          color: white;
+          padding: 14px;
+          text-align: left;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+
+        .modern-table td {
+          padding: 14px;
+          font-weight: 600;
+          color: var(--text);
+        }
+
+        .modern-table tbody tr {
+          border-bottom: 1px solid var(--card-border);
+          transition: all 0.2s ease;
+        }
+
+        .modern-table tbody tr:nth-child(even) {
+          background: rgba(0,0,0,0.025);
+        }
+
+        body.dark .modern-table tbody tr:nth-child(even) {
+          background: rgba(255,255,255,0.04);
+        }
+
+        .modern-table tbody tr:hover {
+          background: rgba(213, 10, 10, 0.08);
+          transform: scale(1.01);
+        }
+
+        .col-name {
+          color: var(--text);
+          font-weight: 700;
+        }
+
+        .col-desc {
+          color: var(--text);
+          opacity: 0.85;
+        }
+
+        .col-type {
+          text-align: right;
+        }
+
+        .type-badge {
+          padding: 4px 10px;
+          border-radius: 999px;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+      `;
+      document.head.appendChild(style);
     }
 
     if (section === 'team') {
