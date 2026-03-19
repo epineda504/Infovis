@@ -110,7 +110,7 @@ strftime('%Y-%m-%d',
     printf('%02d', substr(schedule_date, 1, instr(schedule_date, '/') - 1)) || '-' || 
     printf('%02d', substr(schedule_date, instr(schedule_date, '/') + 1, 
       instr(substr(schedule_date, instr(schedule_date, '/') + 1), '/') - 1))
-      ) AS fecha_formateada
+      ) AS schedule_date
 
 ,a.schedule_week
 ,b.team_id as team_id_home
