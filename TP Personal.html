@@ -10,11 +10,21 @@
       --bg: #ffffff;
       --text: #111;
       --primary: #d50a0a;
+
+      --card-bg: #f5f5f5;
+      --card-text: #111;
+      --card-secondary: #555;
+      --card-border: #ddd;
     }
 
     body.dark {
-      --bg: #121212;
-      --text: #f1f1f1;
+    --bg: #121212;
+    --text: #f1f1f1;
+
+    --card-bg: #1a1d23;
+    --card-text: #f1f1f1;
+    --card-secondary: #aaa;
+    --card-border: #2a2e36;
     }
 
     body {
@@ -178,138 +188,156 @@
     </div>
   </div>
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const main = document.querySelector('.main');
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const main = document.querySelector('.main');
 
-      sidebar.classList.toggle('hidden');
-      main.classList.toggle('shifted');
+    sidebar.classList.toggle('hidden');
+    main.classList.toggle('shifted');
+  }
+
+  function toggleMode() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+  }
+
+  // Mantener modo oscuro
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark');
+  }
+
+  function changeContent(section) {
+    const content = document.getElementById('content');
+
+    if (section === 'home') {
+      content.innerHTML = `
+        <h1>Tampa Bay Buccaneers</h1>
+        <p>Bienvenido al sistema de análisis del equipo.</p>
+        <p>
+          Aquí podrás encontrar información sobre el catálogo de las múltiples variables utilizadas del dataset.
+        </p>
+      `;
     }
 
-    function toggleMode() {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+    if (section === 'team') {
+      content.innerHTML = `
+        <h1>Tampa Bay Buccaneers</h1>
+        <p>Información del roster de los Tampa Bay Buccaneers.</p>
+      `;
     }
 
-    // Mantener modo oscuro
-    if (localStorage.getItem('darkMode') === 'true') {
-      document.body.classList.add('dark');
-    }
+    if (section === 'stats') {
+      content.innerHTML = `
+        <h1>Tampa Bay Buccaneers</h1>
+        <p>Aquí podrás visualizar métricas del equipo.</p>
 
-    function changeContent(section) {
-      const content = document.getElementById('content');
+        <div style="
+          background:var(--card-bg);
+          padding:20px;
+          border-radius:12px;
+          margin-top:20px;
+          color:var(--card-text);
+        ">
 
-      if (section === 'home') {
-        content.innerHTML = `
-          <h1>Tampa Bay Buccaneers</h1>
-          <p>Bienvenido al sistema de análisis del equipo.</p>
-          <p>
-            Aquí podrás encontrar información sobre el catálogo de las múltiples variables utilizadas del dataset.
-          </p>
-        `;
-      }
+          <!-- HEADER -->
+          <div style="
+            display:grid;
+            grid-template-columns: 1fr auto 1fr;
+            padding: 10px;
+            font-weight:bold;
+            border-bottom:1px solid var(--card-border);
+            text-transform:uppercase;
+            color:var(--card-text);
+          ">
+            <div>Home</div>
+            <div style="text-align:center;">Score</div>
+            <div style="text-align:right;">Away</div>
+          </div>
 
-      if (section === 'team') {
-        content.innerHTML = `
-          <h1>Tampa Bay Buccaneers</h1>
-          <p>Información del roster de los Tampa Bay Buccaneers.</p>
-        `;
-      }
+          ${[
+            ["Tampa Bay Buccaneers","Washington Commanders",20,23,"Jan 12, 2025 | Wildcard","tb","wsh"],
+            ["Detroit Lions","Tampa Bay Buccaneers",31,23,"Jan 21, 2024 | Division","det","tb"],
+            ["Tampa Bay Buccaneers","Philadelphia Eagles",32,9,"Jan 15, 2024 | Wildcard","tb","phi"],
+            ["Tampa Bay Buccaneers","Dallas Cowboys",14,31,"Jan 16, 2023 | Wildcard","tb","dal"],
+            ["Tampa Bay Buccaneers","Los Angeles Rams",27,30,"Jan 23, 2022 | Division","tb","lar"],
+            ["Tampa Bay Buccaneers","Philadelphia Eagles",31,15,"Jan 16, 2022 | Wildcard","tb","phi"],
+            ["Tampa Bay Buccaneers","Kansas City Chiefs",31,9,"Feb 07, 2021 | Superbowl","tb","kc"],
+            ["Green Bay Packers","Tampa Bay Buccaneers",26,31,"Jan 24, 2021 | Conference","gb","tb"],
+            ["New Orleans Saints","Tampa Bay Buccaneers",20,30,"Jan 17, 2021 | Division","no","tb"],
+            ["Washington Football Team","Tampa Bay Buccaneers",23,31,"Jan 09, 2021 | Wildcard","wsh","tb"],
+            ["Tampa Bay Buccaneers","New York Giants",14,24,"Jan 06, 2008 | Wildcard","tb","nyg"],
+            ["Tampa Bay Buccaneers","Washington Redskins",10,17,"Jan 07, 2006 | Wildcard","tb","wsh"],
+            ["Oakland Raiders","Tampa Bay Buccaneers",21,48,"Jan 26, 2003 | Superbowl","lv","tb"],
+            ["Philadelphia Eagles","Tampa Bay Buccaneers",10,27,"Jan 19, 2003 | Conference","phi","tb"],
+            ["Tampa Bay Buccaneers","San Francisco 49ers",31,6,"Jan 12, 2003 | Division","tb","sf"],
+            ["Philadelphia Eagles","Tampa Bay Buccaneers",31,9,"Jan 12, 2002 | Wildcard","phi","tb"],
+            ["Philadelphia Eagles","Tampa Bay Buccaneers",21,3,"Dec 31, 2000 | Wildcard","phi","tb"],
+            ["St. Louis Rams","Tampa Bay Buccaneers",11,6,"Jan 23, 2000 | Conference","lar","tb"],
+            ["Tampa Bay Buccaneers","Washington Redskins",14,13,"Jan 15, 2000 | Division","tb","wsh"],
+            ["Green Bay Packers","Tampa Bay Buccaneers",21,7,"Jan 04, 1998 | Division","gb","tb"],
+            ["Tampa Bay Buccaneers","Detroit Lions",20,10,"Dec 28, 1997 | Wildcard","tb","det"],
+            ["Dallas Cowboys","Tampa Bay Buccaneers",30,17,"Jan 09, 1983 | Wildcard","dal","tb"],
+            ["Dallas Cowboys","Tampa Bay Buccaneers",38,0,"Jan 02, 1982 | Division","dal","tb"],
+            ["Tampa Bay Buccaneers","Los Angeles Rams",0,9,"Jan 06, 1980 | Conference","tb","lar"],
+            ["Tampa Bay Buccaneers","Philadelphia Eagles",24,17,"Dec 29, 1979 | Division","tb","phi"]
+          ].map(g => {
+            const homeLogo = `https://a.espncdn.com/i/teamlogos/nfl/500/${g[5]}.png`;
+            const awayLogo = `https://a.espncdn.com/i/teamlogos/nfl/500/${g[6]}.png`;
 
-      if (section === 'stats') {
-        content.innerHTML = `
-          <h1>Tampa Bay Buccaneers</h1>
-          <p>Aquí podrás visualizar métricas del equipo.</p>
-
-          <div style="background:#0f1115; padding:20px; border-radius:12px; margin-top:20px;">
-
+            return `
             <div style="
-              display:grid;
-              grid-template-columns: 1fr auto 1fr;
-              padding: 10px;
-              font-weight:bold;
-              border-bottom:1px solid #2a2e36;
-              text-transform:uppercase;
+              background:var(--card-bg);
+              padding:15px;
+              margin:12px 0;
+              border-radius:12px;
+              color:var(--card-text);
             ">
-              <div>Home</div>
-              <div style="text-align:center;">Score</div>
-              <div style="text-align:right;">Away</div>
-            </div>
 
-            ${[
-              ["Tampa Bay Buccaneers","Washington Commanders",20,23,"Jan 12, 2025 | Wildcard","tb","wsh"],
-              ["Detroit Lions","Tampa Bay Buccaneers",31,23,"Jan 21, 2024 | Division","det","tb"],
-              ["Tampa Bay Buccaneers","Philadelphia Eagles",32,9,"Jan 15, 2024 | Wildcard","tb","phi"],
-              ["Tampa Bay Buccaneers","Dallas Cowboys",14,31,"Jan 16, 2023 | Wildcard","tb","dal"],
-              ["Tampa Bay Buccaneers","Los Angeles Rams",27,30,"Jan 23, 2022 | Division","tb","lar"],
-              ["Tampa Bay Buccaneers","Philadelphia Eagles",31,15,"Jan 16, 2022 | Wildcard","tb","phi"],
-              ["Tampa Bay Buccaneers","Kansas City Chiefs",31,9,"Feb 07, 2021 | Superbowl","tb","kc"],
-              ["Green Bay Packers","Tampa Bay Buccaneers",26,31,"Jan 24, 2021 | Conference","gb","tb"],
-              ["New Orleans Saints","Tampa Bay Buccaneers",20,30,"Jan 17, 2021 | Division","no","tb"],
-              ["Washington Football Team","Tampa Bay Buccaneers",23,31,"Jan 09, 2021 | Wildcard","wsh","tb"],
-              ["Tampa Bay Buccaneers","New York Giants",14,24,"Jan 06, 2008 | Wildcard","tb","nyg"],
-              ["Tampa Bay Buccaneers","Washington Redskins",10,17,"Jan 07, 2006 | Wildcard","tb","wsh"],
-              ["Oakland Raiders","Tampa Bay Buccaneers",21,48,"Jan 26, 2003 | Superbowl","lv","tb"],
-              ["Philadelphia Eagles","Tampa Bay Buccaneers",10,27,"Jan 19, 2003 | Conference","phi","tb"],
-              ["Tampa Bay Buccaneers","San Francisco 49ers",31,6,"Jan 12, 2003 | Division","tb","sf"],
-              ["Philadelphia Eagles","Tampa Bay Buccaneers",31,9,"Jan 12, 2002 | Wildcard","phi","tb"],
-              ["Philadelphia Eagles","Tampa Bay Buccaneers",21,3,"Dec 31, 2000 | Wildcard","phi","tb"],
-              ["St. Louis Rams","Tampa Bay Buccaneers",11,6,"Jan 23, 2000 | Conference","lar","tb"],
-              ["Tampa Bay Buccaneers","Washington Redskins",14,13,"Jan 15, 2000 | Division","tb","wsh"],
-              ["Green Bay Packers","Tampa Bay Buccaneers",21,7,"Jan 04, 1998 | Division","gb","tb"],
-              ["Tampa Bay Buccaneers","Detroit Lions",20,10,"Dec 28, 1997 | Wildcard","tb","det"],
-              ["Dallas Cowboys","Tampa Bay Buccaneers",30,17,"Jan 09, 1983 | Wildcard","dal","tb"],
-              ["Dallas Cowboys","Tampa Bay Buccaneers",38,0,"Jan 02, 1982 | Division","dal","tb"],
-              ["Tampa Bay Buccaneers","Los Angeles Rams",0,9,"Jan 06, 1980 | Conference","tb","lar"],
-              ["Tampa Bay Buccaneers","Philadelphia Eagles",24,17,"Dec 29, 1979 | Division","tb","phi"]
-            ].map(g => {
-              const homeLogo = `https://a.espncdn.com/i/teamlogos/nfl/500/${g[5]}.png`;
-              const awayLogo = `https://a.espncdn.com/i/teamlogos/nfl/500/${g[6]}.png`;
-
-              return `
               <div style="
-                background:#1a1d23;
-                padding:15px;
-                margin:12px 0;
-                border-radius:12px;
+                display:grid;
+                grid-template-columns:1fr auto 1fr;
+                align-items:center;
               ">
 
-                <div style="
-                  display:grid;
-                  grid-template-columns:1fr auto 1fr;
-                  align-items:center;
-                ">
-
-                  <div style="display:flex; gap:10px; align-items:center;">
-                    <img src="${homeLogo}" width="32">
-                    <span>${g[0]}</span>
-                  </div>
-
-                  <div style="font-size:22px; font-weight:bold;">
-                    ${g[2]} - ${g[3]}
-                  </div>
-
-                  <div style="display:flex; gap:10px; align-items:center; justify-content:flex-end;">
-                    <span>${g[1]}</span>
-                    <img src="${awayLogo}" width="32">
-                  </div>
-
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <img src="${homeLogo}" width="32">
+                  <span>${g[0]}</span>
                 </div>
 
-                <div style="text-align:center; font-size:12px; color:#aaa; margin-top:6px;">
-                  ${g[4]}
+                <div style="
+                  font-size:22px;
+                  font-weight:bold;
+                  color:var(--card-text);
+                ">
+                  ${g[2]} - ${g[3]}
+                </div>
+
+                <div style="display:flex; gap:10px; align-items:center; justify-content:flex-end;">
+                  <span>${g[1]}</span>
+                  <img src="${awayLogo}" width="32">
                 </div>
 
               </div>
-              `;
-            }).join("")}
 
-          </div>
-        `;
-      }
+              <div style="
+                text-align:center;
+                font-size:12px;
+                color:var(--card-secondary);
+                margin-top:6px;
+              ">
+                ${g[4]}
+              </div>
+
+            </div>
+            `;
+          }).join("")}
+
+        </div>
+      `;
     }
-        </script>
+  }
+</script>
 
 </body>
 </html>
