@@ -127,8 +127,8 @@ strftime('%Y-%m-%d',
 ,c.team_conference as team_conference_away
 ,c.logo_url as logo_url_away
 
-,a.score_home
-,a.score_away
+,Cast(a.score_home as Integer) as score_home
+,Cast(a.score_away as Integer) as score_away
 ,a.stadium
 ,a.stadium_neutral
 ,a.weather_temperature
@@ -155,4 +155,223 @@ Where a.team_home = 'Tampa Bay Buccaneers' or a.team_away = 'Tampa Bay Buccaneer
 Pre_data1 = sql.sqldf(Pre_data, locals())
 Pre_data1.to_csv('NFL_Buccaneers_Data.csv', index=False)
 
-print(Pre_data1.head())
+# print(Pre_data1.head())
+
+## ------------------------------------------------------------------------------------------------------- ##
+
+# =========================
+# 1. CONFIG
+# =========================
+team_focus = "Tampa Bay Buccaneers"
+
+# =========================
+# 2. LEER CSV
+# =========================
+df = pd.read_csv("NFL_Buccaneers_Data.csv")
+
+# =========================
+# 3. FILTRAR PARTIDOS DEL EQUIPO
+# =========================
+df = df[
+    (df['team_home'] == team_focus) |
+    (df['team_away'] == team_focus)
+]
+
+# =========================
+# 4. MAPEAR LOGOS
+# =========================
+team_logo_map = {}
+
+for _, row in df.iterrows():
+    if pd.notna(row['logo_url_home']):
+        team_logo_map[row['team_home']] = row['logo_url_home']
+    if pd.notna(row['logo_url_away']):
+        team_logo_map[row['team_away']] = row['logo_url_away']
+
+def get_logo(team):
+    return team_logo_map.get(team, "https://via.placeholder.com/32")
+
+# =========================
+# 5. ORDENAR POR FECHA
+# =========================
+df['parsed_date'] = pd.to_datetime(df['schedule_date'], errors='coerce')
+df = df.sort_values(by='parsed_date', ascending=False)
+
+# =========================
+# 6. GENERAR CARDS
+# =========================
+html_cards = ""
+
+for _, row in df.iterrows():
+
+    home = row['team_home']
+    away = row['team_away']
+    home_score = row['score_home']
+    away_score = row['score_away']
+
+    # Fecha formateada
+    try:
+        date = row['parsed_date'].strftime('%b %d, %Y')
+    except:
+        date = row['schedule_date']
+
+    # Tipo de partido
+    week_type = row.get('schedule_week', '')
+
+    # Colores ganador
+    if home_score > away_score:
+        home_color = "white"
+        away_color = "gray"
+    else:
+        home_color = "gray"
+        away_color = "white"
+
+    html_cards += f"""
+    <div class="match">
+
+        <div class="teams">
+            <div class="team">
+                <img src="{get_logo(home)}">
+                <span style="color:{home_color}">{home}</span>
+            </div>
+
+            <div class="score">
+                {home_score} - {away_score}
+            </div>
+
+            <div class="team right">
+                <span style="color:{away_color}">{away}</span>
+                <img src="{get_logo(away)}">
+            </div>
+        </div>
+
+        <div class="details">
+            {date} | {week_type}
+        </div>
+
+    </div>
+    """
+
+# =========================
+# 7. HTML FINAL
+# =========================
+html_page = f"""
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+
+body {{
+    background-color: #0f1115;
+    font-family: Arial;
+    color: white;
+}}
+
+.container {{
+    width: 800px;
+    margin: 40px auto;
+}}
+
+h2 {{
+    text-align: center;
+}}
+
+.header {{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    border-bottom: 1px solid #2a2e36;
+    padding-bottom: 8px;
+}}
+
+.header div:nth-child(2) {{
+    text-align: center;
+}}
+
+.header div:last-child {{
+    text-align: right;
+}}
+
+.match {{
+    background: #1a1d23;
+    padding: 15px;
+    margin: 12px 0;
+    border-radius: 12px;
+}}
+
+.match:hover {{
+    background: #2a2e36;
+    transition: 0.2s;
+}}
+
+.teams {{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}}
+
+.team {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}}
+
+.team.right {{
+    justify-content: flex-end;
+}}
+
+.team img {{
+    width: 32px;
+    height: 32px;
+}}
+
+.score {{
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+}}
+
+.details {{
+    margin-top: 8px;
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+}}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Game Log</h2>
+
+<div class="header">
+    <div>Home</div>
+    <div>Score</div>
+    <div>Away</div>
+</div>
+
+{html_cards}
+
+</div>
+
+</body>
+</html>
+"""
+
+# =========================
+# 8. GUARDAR HTML
+# =========================
+with open("game_log.html", "w", encoding="utf-8") as f:
+    f.write(html_page)
+
+print("✅ HTML generado correctamente con header")
