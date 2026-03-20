@@ -258,7 +258,7 @@ for date, text in annotations.items():
 # Configuración responsiva y título más grande
 pio.templates.default = "seaborn"
 fig.update_layout(
-    title="Tampa Bay Buccaneers - Score History",
+    title="Tampa Bay Buccaneers - Momentos Importantes",
     title_font=dict(size=32, color="Black", family="Arial"),
     title_x=0.5,
     xaxis_title="Fechas",
@@ -272,6 +272,7 @@ fig.update_layout(
     hovermode="x unified",
     autosize=True,
     template=pio.templates.default
+    
 )
 
 # Hoverlabel estético
@@ -282,6 +283,7 @@ fig.update_traces(
         font=dict(color="white", size=14, family="Arial")
     )
 )
+
 
 # Exportar a HTML
 fig.write_html("Plotly.html", include_plotlyjs="cdn", full_html=True)
