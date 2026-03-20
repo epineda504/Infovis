@@ -1,5 +1,7 @@
 import pandas as pd
 import pandasql as sql
+import plotly.graph_objects as go
+import plotly.io as pio
 
 df_NFL_Playoffs = 'https://raw.githubusercontent.com/epineda504/Infovis/24ffb11d1914cfea0f18c7f9d503e7b86222beed/nfl_playoffs.csv'
 df_NFL_Playoffs = pd.read_csv(df_NFL_Playoffs)
@@ -145,6 +147,9 @@ strftime('%Y-%m-%d',
        When a.team_away = 'Tampa Bay Buccaneers' and a.score_away < a.score_home Then 1  
        Else 0 End) as Flag_Defeat
 
+,(Case When a.team_home = 'Tampa Bay Buccaneers'  Then a.score_home 
+       When a.team_away = 'Tampa Bay Buccaneers'  Then a.score_away End) as Flag_Score
+
 FROM df_NFL_Playoffs as a
 Left Join df_NFL_Teams as b on a.team_home = b.team_name
 Left Join df_NFL_Teams as c on a.team_away = c.team_name
@@ -155,223 +160,128 @@ Where a.team_home = 'Tampa Bay Buccaneers' or a.team_away = 'Tampa Bay Buccaneer
 Pre_data1 = sql.sqldf(Pre_data, locals())
 Pre_data1.to_csv('NFL_Buccaneers_Data.csv', index=False)
 
-# print(Pre_data1.head())
+#----------------------------------------------------------------------------------------------#
 
-## ------------------------------------------------------------------------------------------------------- ##
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.io as pio
 
-# =========================
-# 1. CONFIG
-# =========================
-team_focus = "Tampa Bay Buccaneers"
+# Suponiendo que ya tienes Pre_data1 cargado
+# Pre_data1 = pd.read_csv("buccaneers_playoffs.csv")
 
-# =========================
-# 2. LEER CSV
-# =========================
-df = pd.read_csv("NFL_Buccaneers_Data.csv")
+# Convertir fechas
+Pre_data1["schedule_date"] = pd.to_datetime(Pre_data1["schedule_date"], errors="coerce")
 
-# =========================
-# 3. FILTRAR PARTIDOS DEL EQUIPO
-# =========================
-df = df[
-    (df['team_home'] == team_focus) |
-    (df['team_away'] == team_focus)
-]
+# Usar Flag_Score como métrica principal
+Pre_data1["score_flag"] = Pre_data1["Flag_Score"]
 
-# =========================
-# 4. MAPEAR LOGOS
-# =========================
-team_logo_map = {}
+# Crear columna de texto para hover
+Pre_data1["hover_text"] = Pre_data1["Flag_Victory"].apply(lambda x: "Victoria" if x == 1 else "Derrota")
 
-for _, row in df.iterrows():
-    if pd.notna(row['logo_url_home']):
-        team_logo_map[row['team_home']] = row['logo_url_home']
-    if pd.notna(row['logo_url_away']):
-        team_logo_map[row['team_away']] = row['logo_url_away']
+# Separar victorias y derrotas
+victorias = Pre_data1[Pre_data1["Flag_Victory"] == 1]
+derrotas = Pre_data1[Pre_data1["Flag_Victory"] == 0]
 
-def get_logo(team):
-    return team_logo_map.get(team, "https://via.placeholder.com/32")
+# Gráfico
+fig = go.Figure()
 
-# =========================
-# 5. ORDENAR POR FECHA
-# =========================
-df['parsed_date'] = pd.to_datetime(df['schedule_date'], errors='coerce')
-df = df.sort_values(by='parsed_date', ascending=False)
+# Línea gris general
+fig.add_trace(go.Scatter(
+    x=Pre_data1["schedule_date"],
+    y=Pre_data1["score_flag"],
+    mode="lines",
+    line=dict(color="gray", width=2),
+    name="Score Line",
+    hoverinfo="skip"
+))
 
-# =========================
-# 6. GENERAR CARDS
-# =========================
-html_cards = ""
+# Puntos verdes (victorias)
+fig.add_trace(go.Scatter(
+    x=victorias["schedule_date"],
+    y=victorias["score_flag"],
+    mode="markers",
+    name="Victoria",
+    marker=dict(size=8, color="green"),
+    text=victorias["hover_text"],
+    hovertemplate="Resultado: %{text}<br>Score: %{y}<br>Fecha: %{x}<extra></extra>"
+))
 
-for _, row in df.iterrows():
+# Puntos rojos (derrotas)
+fig.add_trace(go.Scatter(
+    x=derrotas["schedule_date"],
+    y=derrotas["score_flag"],
+    mode="markers",
+    name="Derrota",
+    marker=dict(size=8, color="red"),
+    text=derrotas["hover_text"],
+    hovertemplate="Resultado: %{text}<br>Score: %{y}<br>Fecha: %{x}<extra></extra>"
+))
 
-    home = row['team_home']
-    away = row['team_away']
-    home_score = row['score_home']
-    away_score = row['score_away']
+# Anotaciones importantes (solo texto, con saltos de línea para que no sean tan anchas)
+annotations = {
+    "2003-01-26": "Super Bowl XXXVII<br>(vs Raiders)",
+    "2020-03-20": "Llega Tom Brady<br>como agente libre",
+    "2021-02-07": "Super Bowl LV<br>(vs Chiefs)<br>Tom Brady MVP",
+    "2025-01-05": "Mike Evans<br>1,000 yardas<br>11ª temporada consecutiva"
+}
 
-    # Fecha formateada
-    try:
-        date = row['parsed_date'].strftime('%b %d, %Y')
-    except:
-        date = row['schedule_date']
+for date, text in annotations.items():
+    target_date = pd.to_datetime(date)
+    row = Pre_data1.loc[Pre_data1["schedule_date"] == target_date]
 
-    # Tipo de partido
-    week_type = row.get('schedule_week', '')
+    max_y = Pre_data1["score_flag"].max()
 
-    # Colores ganador
-    if home_score > away_score:
-        home_color = "white"
-        away_color = "gray"
+    if not row.empty:
+        y_val = row["score_flag"].values[0]
     else:
-        home_color = "gray"
-        away_color = "white"
+       y_val = max_y + 4   # valor fijo si no hay partido
 
-    html_cards += f"""
-    <div class="match">
+    annotation_text = f"{text}<br>Fecha: {target_date.strftime('%Y-%m-%d')}"
 
-        <div class="teams">
-            <div class="team">
-                <img src="{get_logo(home)}">
-                <span style="color:{home_color}">{home}</span>
-            </div>
 
-            <div class="score">
-                {home_score} - {away_score}
-            </div>
+    fig.add_annotation(
+        x=target_date,
+        y=y_val,
+        text=annotation_text,  # texto con fecha
+        showarrow=True,
+        arrowhead=3,
+        arrowcolor="gold",
+        ax=0,
+        ay=-140,
+        bgcolor="#1D6E8C",
+        font=dict(color="white", size=10, family="Arial"),
+        bordercolor="#1D6E8C",
+        borderpad=2,
+        align="center"  # centra el texto para que no se vea tan ancho
+    )
 
-            <div class="team right">
-                <span style="color:{away_color}">{away}</span>
-                <img src="{get_logo(away)}">
-            </div>
-        </div>
+# Configuración responsiva y título más grande
+pio.templates.default = "seaborn"
+fig.update_layout(
+    title="Tampa Bay Buccaneers - Score History",
+    title_font=dict(size=32, color="Black", family="Arial"),
+    title_x=0.5,
+    xaxis_title="Fechas",
+    yaxis_title="Score",
+    xaxis=dict(
+        title_font=dict(size=18),
+        tickformat="%Y-%m",
+        dtick="M40"   # ticks cada 40 meses
+    ),
+    yaxis=dict(title_font=dict(size=18)),
+    hovermode="x unified",
+    autosize=True,
+    template=pio.templates.default
+)
 
-        <div class="details">
-            {date} | {week_type}
-        </div>
+# Hoverlabel estético
+fig.update_traces(
+    hoverlabel=dict(
+        bgcolor="rgba(30,30,30,0.9)",   # fondo oscuro semitransparente
+        bordercolor="lightgray",        # borde claro
+        font=dict(color="white", size=14, family="Arial")
+    )
+)
 
-    </div>
-    """
-
-# =========================
-# 7. HTML FINAL
-# =========================
-html_page = f"""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>
-
-body {{
-    background-color: #0f1115;
-    font-family: Arial;
-    color: white;
-}}
-
-.container {{
-    width: 800px;
-    margin: 40px auto;
-}}
-
-h2 {{
-    text-align: center;
-}}
-
-.header {{
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    margin-bottom: 12px;
-    padding: 0 10px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    text-transform: uppercase;
-    border-bottom: 1px solid #2a2e36;
-    padding-bottom: 8px;
-}}
-
-.header div:nth-child(2) {{
-    text-align: center;
-}}
-
-.header div:last-child {{
-    text-align: right;
-}}
-
-.match {{
-    background: #1a1d23;
-    padding: 15px;
-    margin: 12px 0;
-    border-radius: 12px;
-}}
-
-.match:hover {{
-    background: #2a2e36;
-    transition: 0.2s;
-}}
-
-.teams {{
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-}}
-
-.team {{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}}
-
-.team.right {{
-    justify-content: flex-end;
-}}
-
-.team img {{
-    width: 32px;
-    height: 32px;
-}}
-
-.score {{
-    font-size: 26px;
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 1px;
-}}
-
-.details {{
-    margin-top: 8px;
-    font-size: 12px;
-    color: #aaa;
-    text-align: center;
-}}
-
-</style>
-</head>
-
-<body>
-
-<div class="container">
-<h2>Game Log</h2>
-
-<div class="header">
-    <div>Home</div>
-    <div>Score</div>
-    <div>Away</div>
-</div>
-
-{html_cards}
-
-</div>
-
-</body>
-</html>
-"""
-
-# =========================
-# 8. GUARDAR HTML
-# =========================
-with open("game_log.html", "w", encoding="utf-8") as f:
-    f.write(html_page)
-
-print("HTML generado correctamente con header")
+# Exportar a HTML
+fig.write_html("Plotly.html", include_plotlyjs="cdn", full_html=True)
