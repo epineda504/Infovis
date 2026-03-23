@@ -150,6 +150,14 @@ strftime('%Y-%m-%d',
 ,(Case When a.team_home = 'Tampa Bay Buccaneers'  Then a.score_home 
        When a.team_away = 'Tampa Bay Buccaneers'  Then a.score_away End) as Flag_Score
 
+       
+,(Case When a.team_home = 'Tampa Bay Buccaneers' and a.score_home > a.score_away Then 1
+       When a.team_away = 'Tampa Bay Buccaneers' and a.score_away > a.score_home Then 1
+       
+       When a.team_home = 'Tampa Bay Buccaneers' and a.score_home < a.score_away Then (ABS(RANDOM()) % 100) / 100.0
+       When a.team_away = 'Tampa Bay Buccaneers' and a.score_away < a.score_home Then (ABS(RANDOM()) % 100) / 100.0
+       Else 0 End) as Personal_Satisfaction_Rate
+
 FROM df_NFL_Playoffs as a
 Left Join df_NFL_Teams as b on a.team_home = b.team_name
 Left Join df_NFL_Teams as c on a.team_away = c.team_name
@@ -160,130 +168,133 @@ Where a.team_home = 'Tampa Bay Buccaneers' or a.team_away = 'Tampa Bay Buccaneer
 Pre_data1 = sql.sqldf(Pre_data, locals())
 Pre_data1.to_csv('NFL_Buccaneers_Data.csv', index=False)
 
+
+
+
 #----------------------------------------------------------------------------------------------#
 
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.io as pio
+# import pandas as pd
+# import plotly.graph_objects as go
+# import plotly.io as pio
 
-# Suponiendo que ya tienes Pre_data1 cargado
-# Pre_data1 = pd.read_csv("buccaneers_playoffs.csv")
+# # Suponiendo que ya tienes Pre_data1 cargado
+# # Pre_data1 = pd.read_csv("buccaneers_playoffs.csv")
 
-# Convertir fechas
-Pre_data1["schedule_date"] = pd.to_datetime(Pre_data1["schedule_date"], errors="coerce")
+# # Convertir fechas
+# Pre_data1["schedule_date"] = pd.to_datetime(Pre_data1["schedule_date"], errors="coerce")
 
-# Usar Flag_Score como métrica principal
-Pre_data1["score_flag"] = Pre_data1["Flag_Score"]
+# # Usar Flag_Score como métrica principal
+# Pre_data1["score_flag"] = Pre_data1["Flag_Score"]
 
-# Crear columna de texto para hover
-Pre_data1["hover_text"] = Pre_data1["Flag_Victory"].apply(lambda x: "Victoria" if x == 1 else "Derrota")
+# # Crear columna de texto para hover
+# Pre_data1["hover_text"] = Pre_data1["Flag_Victory"].apply(lambda x: "Victoria" if x == 1 else "Derrota")
 
-# Separar victorias y derrotas
-victorias = Pre_data1[Pre_data1["Flag_Victory"] == 1]
-derrotas = Pre_data1[Pre_data1["Flag_Victory"] == 0]
+# # Separar victorias y derrotas
+# victorias = Pre_data1[Pre_data1["Flag_Victory"] == 1]
+# derrotas = Pre_data1[Pre_data1["Flag_Victory"] == 0]
 
-# Gráfico
-fig = go.Figure()
+# # Gráfico
+# fig = go.Figure()
 
-# Línea gris general
-fig.add_trace(go.Scatter(
-    x=Pre_data1["schedule_date"],
-    y=Pre_data1["score_flag"],
-    mode="lines",
-    line=dict(color="gray", width=2),
-    name="Score Line",
-    hoverinfo="skip"
-))
+# # Línea gris general
+# fig.add_trace(go.Scatter(
+#     x=Pre_data1["schedule_date"],
+#     y=Pre_data1["score_flag"],
+#     mode="lines",
+#     line=dict(color="gray", width=2),
+#     name="Score Line",
+#     hoverinfo="skip"
+# ))
 
-# Puntos verdes (victorias)
-fig.add_trace(go.Scatter(
-    x=victorias["schedule_date"],
-    y=victorias["score_flag"],
-    mode="markers",
-    name="Victoria",
-    marker=dict(size=8, color="green"),
-    text=victorias["hover_text"],
-    hovertemplate="Resultado: %{text}<br>Score: %{y}<br>Fecha: %{x}<extra></extra>"
-))
+# # Puntos verdes (victorias)
+# fig.add_trace(go.Scatter(
+#     x=victorias["schedule_date"],
+#     y=victorias["score_flag"],
+#     mode="markers",
+#     name="Victoria",
+#     marker=dict(size=8, color="green"),
+#     text=victorias["hover_text"],
+#     hovertemplate="Resultado: %{text}<br>Score: %{y}<br>Fecha: %{x}<extra></extra>"
+# ))
 
-# Puntos rojos (derrotas)
-fig.add_trace(go.Scatter(
-    x=derrotas["schedule_date"],
-    y=derrotas["score_flag"],
-    mode="markers",
-    name="Derrota",
-    marker=dict(size=8, color="red"),
-    text=derrotas["hover_text"],
-    hovertemplate="Resultado: %{text}<br>Score: %{y}<br>Fecha: %{x}<extra></extra>"
-))
+# # Puntos rojos (derrotas)
+# fig.add_trace(go.Scatter(
+#     x=derrotas["schedule_date"],
+#     y=derrotas["score_flag"],
+#     mode="markers",
+#     name="Derrota",
+#     marker=dict(size=8, color="red"),
+#     text=derrotas["hover_text"],
+#     hovertemplate="Resultado: %{text}<br>Score: %{y}<br>Fecha: %{x}<extra></extra>"
+# ))
 
-# Anotaciones importantes (solo texto, con saltos de línea para que no sean tan anchas)
-annotations = {
-    "2003-01-26": "Super Bowl XXXVII<br>(vs Raiders)",
-    "2020-03-20": "Llega Tom Brady<br>como agente libre",
-    "2021-02-07": "Super Bowl LV<br>(vs Chiefs)<br>Tom Brady MVP",
-    "2025-01-05": "Mike Evans<br>1,000 yardas<br>11ª temporada consecutiva"
-}
+# # Anotaciones importantes (solo texto, con saltos de línea para que no sean tan anchas)
+# annotations = {
+#     "2003-01-26": "Super Bowl XXXVII<br>(vs Raiders)",
+#     "2020-03-20": "Llega Tom Brady<br>como agente libre",
+#     "2021-02-07": "Super Bowl LV<br>(vs Chiefs)<br>Tom Brady MVP",
+#     "2025-01-05": "Mike Evans<br>1,000 yardas<br>11ª temporada consecutiva"
+# }
 
-for date, text in annotations.items():
-    target_date = pd.to_datetime(date)
-    row = Pre_data1.loc[Pre_data1["schedule_date"] == target_date]
+# for date, text in annotations.items():
+#     target_date = pd.to_datetime(date)
+#     row = Pre_data1.loc[Pre_data1["schedule_date"] == target_date]
 
-    max_y = Pre_data1["score_flag"].max()
+#     max_y = Pre_data1["score_flag"].max()
 
-    if not row.empty:
-        y_val = row["score_flag"].values[0]
-    else:
-       y_val = max_y + 4   # valor fijo si no hay partido
+#     if not row.empty:
+#         y_val = row["score_flag"].values[0]
+#     else:
+#        y_val = max_y + 4   # valor fijo si no hay partido
 
-    annotation_text = f"{text}<br>Fecha: {target_date.strftime('%Y-%m-%d')}"
+#     annotation_text = f"{text}<br>Fecha: {target_date.strftime('%Y-%m-%d')}"
 
 
-    fig.add_annotation(
-        x=target_date,
-        y=y_val,
-        text=annotation_text,  # texto con fecha
-        showarrow=True,
-        arrowhead=3,
-        arrowcolor="gold",
-        ax=0,
-        ay=-140,
-        bgcolor="#1D6E8C",
-        font=dict(color="white", size=10, family="Arial"),
-        bordercolor="#1D6E8C",
-        borderpad=2,
-        align="center"  # centra el texto para que no se vea tan ancho
-    )
+#     fig.add_annotation(
+#         x=target_date,
+#         y=y_val,
+#         text=annotation_text,  # texto con fecha
+#         showarrow=True,
+#         arrowhead=3,
+#         arrowcolor="gold",
+#         ax=0,
+#         ay=-140,
+#         bgcolor="#1D6E8C",
+#         font=dict(color="white", size=10, family="Arial"),
+#         bordercolor="#1D6E8C",
+#         borderpad=2,
+#         align="center"  # centra el texto para que no se vea tan ancho
+#     )
 
-# Configuración responsiva y título más grande
-pio.templates.default = "seaborn"
-fig.update_layout(
-    title="Tampa Bay Buccaneers - Momentos Importantes",
-    title_font=dict(size=32, color="Black", family="Arial"),
-    title_x=0.5,
-    xaxis_title="Fechas",
-    yaxis_title="Score",
-    xaxis=dict(
-        title_font=dict(size=18),
-        tickformat="%Y-%m",
-        dtick="M40"   # ticks cada 40 meses
-    ),
-    yaxis=dict(title_font=dict(size=18)),
-    hovermode="x unified",
-    autosize=True,
-    template=pio.templates.default
+# # Configuración responsiva y título más grande
+# pio.templates.default = "seaborn"
+# fig.update_layout(
+#     title="Tampa Bay Buccaneers - Momentos Importantes",
+#     title_font=dict(size=32, color="Black", family="Arial"),
+#     title_x=0.5,
+#     xaxis_title="Fechas",
+#     yaxis_title="Score",
+#     xaxis=dict(
+#         title_font=dict(size=18),
+#         tickformat="%Y-%m",
+#         dtick="M40"   # ticks cada 40 meses
+#     ),
+#     yaxis=dict(title_font=dict(size=18)),
+#     hovermode="x unified",
+#     autosize=True,
+#     template=pio.templates.default
     
-)
+# )
 
-# Hoverlabel estético
-fig.update_traces(
-    hoverlabel=dict(
-        bgcolor="rgba(30,30,30,0.9)",   # fondo oscuro semitransparente
-        bordercolor="lightgray",        # borde claro
-        font=dict(color="white", size=14, family="Arial")
-    )
-)
+# # Hoverlabel estético
+# fig.update_traces(
+#     hoverlabel=dict(
+#         bgcolor="rgba(30,30,30,0.9)",   # fondo oscuro semitransparente
+#         bordercolor="lightgray",        # borde claro
+#         font=dict(color="white", size=14, family="Arial")
+#     )
+# )
 
 
-# Exportar a HTML
-fig.write_html("Plotly.html", include_plotlyjs="cdn", full_html=True)
+# # Exportar a HTML
+# fig.write_html("Plotly.html", include_plotlyjs="cdn", full_html=True)
