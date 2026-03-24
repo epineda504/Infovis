@@ -480,64 +480,103 @@
       document.head.appendChild(style);
     }
 
-if (section === 'team') {
-  content.innerHTML = `
-    <h1>Tampa Bay Buccaneers</h1>
-    <p>Analisis sobre el rendimiento del equipo.</p>
+    if (section === 'team') {
+      content.innerHTML = `
+        <h1>Tampa Bay Buccaneers</h1>
+        <p>Análisis sobre el rendimiento del equipo.</p>
 
-    <h2>Ratio de Victorias y Perdidas</h2>
-    <div class="flourish-embed flourish-chart" data-src="visualisation/27939096"></div>
+        <h2>Ratio de Victorias y Derrotas</h2>
+        <div class="flourish-embed flourish-chart" data-src="visualisation/27939096"></div>
 
-    <h2>Ranking de Satisfacción</h2>
-    <div style="width:100%; display:flex; justify-content:center;">
-      <iframe 
-        title="Tampa Bay Buccaneers - Ranking de Satisfacción%" 
-        src="https://datawrapper.dwcdn.net/eHqi9/5/" 
-        frameborder="0" 
-        scrolling="no"
-        style="width:100%; max-width:900px; border:none;" 
-        height="685">
-      </iframe>
-    </div>
+        <h2>Ranking de Satisfacción</h2>
+        <div style="width:100%; display:flex; justify-content:center;">
+          <iframe 
+            title="Tampa Bay Buccaneers - Ranking de Satisfacción%" 
+            src="https://datawrapper.dwcdn.net/eHqi9/5/" 
+            frameborder="0" 
+            scrolling="no"
+            style="width:100%; max-width:900px; border:none;" 
+            height="685">
+          </iframe>
+        </div>
 
-    <h2>Visualización RawGraphs</h2>
-    <div style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
-      <img 
-        src="viz.svg" 
-        alt="Relación de Score y Satisfacción"
-        style="width:100%; max-width:900px; height:auto; border-radius:12px;"
-      >
-    </div>
-  `;
+        <h2>Ranking de Rendimiento Basado en Estadios Jugados</h2>
+        <div id="tableauContainer" style="width:100%; display:flex; justify-content:center; margin-top:20px;">
+          <div class='tableauPlaceholder' id='vizTableau' style='position: relative; width:100%; max-width:900px;'>
+            <noscript>
+              <a href='#'>
+                <img alt='Sheet 2' 
+                  src='https://public.tableau.com/static/images/TP/TPPersonal_17743272164750/Sheet2/1.png' 
+                  style='border: none; width:100%;' />
+              </a>
+            </noscript>
+            <object class='tableauViz' style='display:none;'>
+              <param name='host_url' value='https://public.tableau.com/' />
+              <param name='embed_code_version' value='3' />
+              <param name='site_root' value='' />
+              <param name='name' value='TPPersonal_17743272164750/Sheet2' />
+              <param name='tabs' value='no' />
+              <param name='toolbar' value='yes' />
+              <param name='animate_transition' value='yes' />
+              <param name='display_static_image' value='yes' />
+              <param name='display_spinner' value='yes' />
+              <param name='display_overlay' value='yes' />
+              <param name='display_count' value='yes' />
+              <param name='language' value='en-US' />
+            </object>
+          </div>
+        </div>
 
-  // 🔹 Cargar Flourish
-  if (!window.Flourish) {
-    const script = document.createElement("script");
-    script.src = "https://public.flourish.studio/resources/embed.js";
-    script.onload = () => {
-      window.Flourish?.init();
-    };
-    document.body.appendChild(script);
-  } else {
-    window.Flourish.init();
-  }
+        <h2>Relación de Score y Satisfacción</h2>
+        <div style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
+          <img 
+            src="viz.svg" 
+            alt="Relación de Score y Satisfacción"
+            style="width:100%; max-width:900px; height:auto; border-radius:12px;"
+          >
+        </div>
+      `;
 
-  // 🔹 Ajustar altura dinámica de Datawrapper
-  window.addEventListener("message", function(e) {
-    if (e.data["datawrapper-height"]) {
-      const iframes = document.querySelectorAll("iframe");
-      for (let key in e.data["datawrapper-height"]) {
-        for (let i = 0; i < iframes.length; i++) {
-          if (iframes[i].contentWindow === e.source) {
-            iframes[i].style.height = e.data["datawrapper-height"][key] + "px";
+      // 🔹 Cargar Flourish
+      if (!window.Flourish) {
+        const script = document.createElement("script");
+        script.src = "https://public.flourish.studio/resources/embed.js";
+        script.onload = () => window.Flourish?.init();
+        document.body.appendChild(script);
+      } else {
+        window.Flourish.init();
+      }
+
+      // 🔹 Ajustar altura dinámica Datawrapper
+      window.addEventListener("message", function(e) {
+        if (e.data["datawrapper-height"]) {
+          const iframes = document.querySelectorAll("iframe");
+          for (let key in e.data["datawrapper-height"]) {
+            for (let i = 0; i < iframes.length; i++) {
+              if (iframes[i].contentWindow === e.source) {
+                iframes[i].style.height = e.data["datawrapper-height"][key] + "px";
+              }
+            }
           }
         }
-      }
-    }
-  });
+      });
 
-  return;
-}
+      // 🔹 Cargar Tableau dinámicamente
+      setTimeout(() => {
+        const divElement = document.getElementById('vizTableau');
+        const vizElement = divElement.getElementsByTagName('object')[0];
+
+        vizElement.style.display = "block";
+        vizElement.style.width = "100%";
+        vizElement.style.height = (divElement.offsetWidth * 0.75) + "px";
+
+        const scriptElement = document.createElement('script');
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);
+      }, 500);
+
+      return;
+    }
 
 
     if (section === 'stats') {
