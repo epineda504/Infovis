@@ -166,9 +166,23 @@ Where a.team_home = 'Tampa Bay Buccaneers' or a.team_away = 'Tampa Bay Buccaneer
 '''
 
 Pre_data1 = sql.sqldf(Pre_data, locals())
-Pre_data1.to_csv('NFL_Buccaneers_Data.csv', index=False)
+Pre_data1.to_csv('NFL_Buccaneers_Data.csv', index=False) ## Final DataSet
 
 
+Data_Wrapper = '''
+
+Select 
+Schedule_date
+,Cast(Flag_Score as integer) as Flag_Score
+,(Case When Flag_Victory = 1 Then 'Yes' Else 'No' End) as Flag_Victory
+,Personal_Satisfaction_Rate
+From Pre_data1
+
+'''
+
+Data_Wrapper1 = sql.sqldf(Data_Wrapper, locals())
+
+Data_Wrapper1.to_csv('Data_Wrapper1.csv', index=False) ## Data_Wrapper
 
 
 #----------------------------------------------------------------------------------------------#

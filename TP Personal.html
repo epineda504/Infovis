@@ -480,14 +480,65 @@
       document.head.appendChild(style);
     }
 
-    if (section === 'team') {
-      content.innerHTML = `
-        <h1>Tampa Bay Buccaneers</h1>
-        <p>Analisis sobre el rendimiento del equipo.</p>
-        <iframe src="Plotly.html" width="100%" height="600" style="border:none;"></iframe>
-      `;
-      return;
+if (section === 'team') {
+  content.innerHTML = `
+    <h1>Tampa Bay Buccaneers</h1>
+    <p>Analisis sobre el rendimiento del equipo.</p>
+
+    <h2>Ratio de Victorias y Perdidas</h2>
+    <div class="flourish-embed flourish-chart" data-src="visualisation/27939096"></div>
+
+    <h2>Ranking de Satisfacción</h2>
+    <div style="width:100%; display:flex; justify-content:center;">
+      <iframe 
+        title="Tampa Bay Buccaneers - Ranking de Satisfacción%" 
+        src="https://datawrapper.dwcdn.net/eHqi9/5/" 
+        frameborder="0" 
+        scrolling="no"
+        style="width:100%; max-width:900px; border:none;" 
+        height="685">
+      </iframe>
+    </div>
+
+    <h2>Visualización RawGraphs</h2>
+    <div style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
+      <img 
+        src="viz.svg" 
+        alt="Relación de Score y Satisfacción"
+        style="width:100%; max-width:900px; height:auto; border-radius:12px;"
+      >
+    </div>
+  `;
+
+  // 🔹 Cargar Flourish
+  if (!window.Flourish) {
+    const script = document.createElement("script");
+    script.src = "https://public.flourish.studio/resources/embed.js";
+    script.onload = () => {
+      window.Flourish?.init();
+    };
+    document.body.appendChild(script);
+  } else {
+    window.Flourish.init();
+  }
+
+  // 🔹 Ajustar altura dinámica de Datawrapper
+  window.addEventListener("message", function(e) {
+    if (e.data["datawrapper-height"]) {
+      const iframes = document.querySelectorAll("iframe");
+      for (let key in e.data["datawrapper-height"]) {
+        for (let i = 0; i < iframes.length; i++) {
+          if (iframes[i].contentWindow === e.source) {
+            iframes[i].style.height = e.data["datawrapper-height"][key] + "px";
+          }
+        }
+      }
     }
+  });
+
+  return;
+}
+
 
     if (section === 'stats') {
 
